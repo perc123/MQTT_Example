@@ -51,7 +51,6 @@ public class ProcessSocketData {
             while (totalBytesRead < length) {
                 int bytesRead = inputStream.read(dataBytes, totalBytesRead, length - totalBytesRead);
                 if (bytesRead == -1) {
-                    // Handle end of stream or incomplete data
                     break;
                 }
                 totalBytesRead += bytesRead;
