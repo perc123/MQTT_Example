@@ -1,10 +1,4 @@
 import org.eclipse.paho.client.mqttv3.*;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class App {
@@ -15,9 +9,8 @@ public class App {
         String requestTopic = "IotTestModuleRequest";
         byte[] requestPayload = "0123456789".getBytes(StandardCharsets.UTF_8);
 
+
         try {
-            ProcessSocketData processSocketData = new ProcessSocketData();
-            MqttCallback mqttCallback = new MqttCallback();
             // Connect to MQTT Broker
             MqttClient client = new MqttClient(broker, clientId);
             MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -40,9 +33,10 @@ public class App {
 
                 @Override
                 public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                    // Handle incoming MQTT message
-                    if (topic.equals(moduleTopic)) {
                         System.out.println("Received message from module: " + new String(mqttMessage.getPayload()));
+                        // Publish the request message
+                        System.out.println("Publishing message: " + new String(requestPayload, StandardCharsets.UTF_8));
+                        client.publish(requestTopic, new MqttMessage(requestPayload));
                         String receivedMessage = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
                         String xorKey = ProcessSocketData.extractXorKey(receivedMessage);
                         if (xorKey != null) {
@@ -50,25 +44,20 @@ public class App {
                             ProcessSocketData.processSocketData(xorKeyValue);
                         }
                     }
-                    if (topic.equals(requestTopic)){
-                        client.publish(requestTopic, new MqttMessage(requestPayload));
-                    }
-                }
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                    // Delivery complete callback (not used in this example)
                 }
-
             });
 
         } catch (MqttException me) {
+            System.out.println("Reason: " + me.getReasonCode());
             System.out.println("Message: " + me.getMessage());
             System.out.println("Localized Message: " + me.getLocalizedMessage());
             System.out.println("Cause: " + me.getCause());
             System.out.println("Exception: " + me);
             me.printStackTrace();
         }
-
     }
 }
+
