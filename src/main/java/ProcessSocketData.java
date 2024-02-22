@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 public class ProcessSocketData {
     private static final String MESSAGE_PATTERN = "key=0x([0-9a-fA-F]+)";
 
-
     // Find the random generated key pattern to extract the key
     public static String extractXorKey(String message) {
         //final String MESSAGE_PATTERN = "key=0x([0-9a-fA-F]+)";
@@ -24,26 +23,18 @@ public class ProcessSocketData {
 
             System.out.println("Connected to the socket on port 12000");
 
-
             // Wrap the input stream in a DataInputStream to read Java primitive data types
             DataInputStream dataInputStream = new DataInputStream(inputStream);
 
 
-            // Read the integer in chunks of four bytes until you have read the complete integer
-            int intValue = 0;
-            for (int i = 0; i < 4; i++) {
-                intValue = (intValue << 8) | (dataInputStream.read() & 0xFF);
-            }
-            System.out.println("Read integer value: " + intValue);
-
-
             // Read data from the socket
-            System.out.println("Data: " + dataInputStream.readInt());
+            System.out.println("Data: " + dataInputStream.readInt()); // Why necessary?
             // Read the first two bytes to determine the length of the data
             byte[] lengthBytes = new byte[2];
             inputStream.read(lengthBytes);
-            int length = ((lengthBytes[0] & 0xFF) << 8) | (lengthBytes[1] & 0xFF);
-            System.out.println(length);
+             /*0xFF mask - unsigned byte in the range 0 to 255
+            https://stackoverflow.com/questions/4266756/can-we-make-unsigned-byte-in-java*/
+            int length = ((lengthBytes[0] & 0xFF) << 8) | (lengthBytes[1] & 0xFF); // form a 16-bit unsigned integer value
 
             // Read the rest of the data
             byte[] dataBytes = new byte[length];

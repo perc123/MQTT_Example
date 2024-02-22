@@ -23,6 +23,8 @@ public class App {
             // Subscribe to the module topic
             System.out.println("Subscribing to topic \"" + moduleTopic + "\"");
             client.subscribe(moduleTopic);
+            //client.publish(requestTopic,new MqttMessage(requestPayload));
+            //client.getTimeToWait();
 
             // Set up callback for MQTT messages
             client.setCallback(new MqttCallback() {
@@ -30,12 +32,11 @@ public class App {
                 public void connectionLost(Throwable throwable) {
                     System.out.println("Connection to MQTT broker lost!");
                 }
-
                 @Override
                 public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
                         System.out.println("Received message from module: " + new String(mqttMessage.getPayload()));
                         // Publish the request message
-                        System.out.println("Publishing message: " + new String(requestPayload, StandardCharsets.UTF_8));
+                        //System.out.println("Publishing message: " + new String(requestPayload, StandardCharsets.UTF_8));
                         client.publish(requestTopic, new MqttMessage(requestPayload));
                         String receivedMessage = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
                         String xorKey = ProcessSocketData.extractXorKey(receivedMessage);
