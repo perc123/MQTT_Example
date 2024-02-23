@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.spec.RSAOtherPrimeInfo;
 
 public class ProcessSocketData {
     private static final String MESSAGE_PATTERN = "key=0x([0-9a-fA-F]+)";
@@ -29,14 +30,15 @@ public class ProcessSocketData {
 
 
             // Read data from the socket
-            System.out.println("Data: " + dataInputStream.readInt()); // Why necessary?
+            //System.out.println("Data: " + dataInputStream.readInt()); // Why necessary?
             // Read the first two bytes to determine the length of the data
             byte[] lengthBytes = new byte[2];
-            inputStream.read(lengthBytes);
+            //inputStream.read(lengthBytes);
+            int length = dataInputStream.readUnsignedShort();
              /*0xFF mask - unsigned byte in the range 0 to 255
             https://stackoverflow.com/questions/4266756/can-we-make-unsigned-byte-in-java*/
-            int length = ((lengthBytes[1] & 0xFF) << 8) | (lengthBytes[0] & 0xFF); // form a 16-bit unsigned integer value TODO:tauschen
-
+            //int length = ((lengthBytes[0] & 0xFF) << 8) | (lengthBytes[1] & 0xFF); // form a 16-bit unsigned integer value TODO:tauschen
+            System.out.println(length);
             // Read the rest of the data
             byte[] dataBytes = new byte[length];
             int totalBytesRead = 0;
