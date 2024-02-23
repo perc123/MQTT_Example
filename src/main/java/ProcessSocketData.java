@@ -25,6 +25,7 @@ public class ProcessSocketData {
 
             // Wrap the input stream in a DataInputStream to read Java primitive data types
             DataInputStream dataInputStream = new DataInputStream(inputStream);
+            //dataInputStream.readUnsignedShort();
 
 
             // Read data from the socket
@@ -34,7 +35,7 @@ public class ProcessSocketData {
             inputStream.read(lengthBytes);
              /*0xFF mask - unsigned byte in the range 0 to 255
             https://stackoverflow.com/questions/4266756/can-we-make-unsigned-byte-in-java*/
-            int length = ((lengthBytes[0] & 0xFF) << 8) | (lengthBytes[1] & 0xFF); // form a 16-bit unsigned integer value
+            int length = ((lengthBytes[1] & 0xFF) << 8) | (lengthBytes[0] & 0xFF); // form a 16-bit unsigned integer value TODO:tauschen
 
             // Read the rest of the data
             byte[] dataBytes = new byte[length];
