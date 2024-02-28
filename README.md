@@ -1,6 +1,6 @@
-Decrypted message:
+**MQTT Client**
 
-*to INSIDE M2M, datetime=2024-02-12T21:42:44.894433400, verification=YHi/ylN9l2AKxV2+SWW19enBCYIlRiRaYbioXkylHX8=*
+This is an simple client implementation that connects with an MQTT protocol.
 
 ProcessSocketData class is processing the Data incoming from the socket,
 as well as searched for the key pattern in the incoming message 
